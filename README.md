@@ -13,3 +13,6 @@
 This code generates flocking model in Julia.
 Most code is based on [agents.jl](https://juliadynamics.github.io/Agents.jl/stable/examples/flock/).   
 And I just made little modification.   
+* TCell   
+This code is pseudo implementation of immune system modeling.    
+Initial goal is to make model just for single D cell and T cell. 
