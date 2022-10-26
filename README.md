@@ -15,4 +15,7 @@ Most code is based on [agents.jl](https://juliadynamics.github.io/Agents.jl/stab
 And I just made little modification.   
 * tcell     
 This code is pseudo implementation of immune system modeling.    
-Initial goal is to make model just for single D cell and T cell. 
+Initial goal is to make model just for single D cell and T cell.    
+
+## * Notes   
+* Maybe I can apply the diffusive equation of IL-2 in PDE using [DifferentialEquations.jl](https://diffeq.sciml.ai/stable/)
