@@ -1,0 +1,15 @@
+# Multiscale modeling for describing the immune system
+
+## References
+* "Systems Biology in Immunology: A Computational Modeling Perspective" Ronald N. Germain, Martin Meier-Schellersheim, Aleksandra Nita-Lazar, and Iain D.C. Fraser, The Annual Review of Immunology 2011 [[download]](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3164774/)    
+* "Key Role of Local Regulation in Chemosensing Revealed by a New Molecular Interaction-Based Modeling Method" Martin Meier-Schellersheim, Xuehua Xu, Bastian Angermann, Eric J. Kunkel, Tian Jin, Ronald N. Germain, PLoS Computational Biology 2006 [[download]](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.0020082)    
+* "T cell migration, search strategies and mechanisms" Matthew F. Krummel, Frederic Bartumeus and Audrey Gérard, Nature Reviews Immunology 2016 [[download]](https://www.nature.com/articles/nri.2015.16)
+###
+
+
+
+## * Brief introduction to codes...
+* flocking model   
+This code generates flocking model in Julia.
+Most code is based on [agents.jl](https://juliadynamics.github.io/Agents.jl/stable/examples/flock/).   
+And I just made little modification.   
