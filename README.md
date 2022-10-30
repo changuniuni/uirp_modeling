@@ -35,6 +35,7 @@ Initial goal is to make model just for single D cell and T cell.
     - radius : 5 $\mu m$
     - movement : 5 $\mu m / min$
     - Total number of Tcell remains constant.(i.e. if a Tcell died, new Tcell is born)
+    - Has  internal level from 0 to 10 which indicates the level of activation
   - Dcell  
     - radius : 15 $\mu m$
     - movement : 3 $\mu m / min$
