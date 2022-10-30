@@ -29,4 +29,4 @@ Initial goal is to make model just for single D cell and T cell.
   
 * Characteristics of each cells  
   - Tcell 
-    - radius : 5 $ \mu m
+    - radius : 5 $mu m
