@@ -41,3 +41,4 @@ Initial goal is to make model just for single D cell and T cell.
     - movement : 3 $\mu m / min$
     - Dcell never dies
  * Activation and Deactivation  
+  - Activation : +1 $/$ 4hours
