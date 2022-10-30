@@ -28,6 +28,7 @@ Initial goal is to make model just for single D cell and T cell.
   2. All Tcell can be activated by all Dcells.  
   3. Tcell-Dcell interaction lasts 24hours and secrete IL-2  
   4. Each Tcell get activated either from Dcell or IL-2 field. **But initial activation must be invoked by Dcell.**   
+  5. Each Tcell recognize same antigen.  
   
 * Characteristics of each cells  
   - Tcell 
@@ -37,3 +38,5 @@ Initial goal is to make model just for single D cell and T cell.
   - Dcell  
     - radius : 15 $\mu m$
     - movement : 3 $\mu m / min$
+    - Dcell never dies
+ * Activation and Deactivation  
