@@ -41,4 +41,6 @@ Initial goal is to make model just for single D cell and T cell.
     - movement : 3 $\mu m / min$
     - Dcell never dies
  * Activation and Deactivation  
+    Basically affected by IL-2 field  
     - Activation : +1/4hours
+    - Deactivation : -1/1hour
