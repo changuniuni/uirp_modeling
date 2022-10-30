@@ -21,6 +21,8 @@ Initial goal is to make model just for single D cell and T cell.
 * Maybe I can apply the differential equation(PDE) to IL-2 diffusion using [DifferentialEquations.jl](https://diffeq.sciml.ai/stable/)
 
 ## 2022/10/25 weekly meeting  
+* Need more research  
+  1. Migration pattern of Tcell and Dcell  
 * We made some assumptions for model implementation.   
   1. Movement pattern of Tcell and Dcell : [random walk(brownian motion)](https://juliadynamics.github.io/Agents.jl/dev/api/)  
   2. All Tcell can be activated by all Dcells.  
