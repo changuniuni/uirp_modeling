@@ -8,7 +8,7 @@
 
 
 
-## * Brief introduction to codes...
+## Brief introduction to codes...
 * flocking model   
 This code generates flocking model in Julia.
 Most code is based on [agents.jl](https://juliadynamics.github.io/Agents.jl/stable/examples/flock/).   
