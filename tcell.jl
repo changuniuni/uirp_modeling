@@ -1,5 +1,7 @@
 using Agents
 using Random
+using InteractiveDynamics
+using CairoMakie
 
 @agent tcell ContinuousAgent{2} begin
     speed::Float64
@@ -46,6 +48,9 @@ function initialize_model(;
 end
 
 a = initialize_model()
+
+figure, = abmplot(a; )
+figure
 
 # function agent_step!(cells, model)
 #     neighbot_ids = nearby_ids(cells, model, cells.visual_distance)
