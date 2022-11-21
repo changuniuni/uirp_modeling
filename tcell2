@@ -4,66 +4,128 @@ using InteractiveDynamics
 using CairoMakie
 
 @agent tcell ContinuousAgent{2} begin
-    activated::Bool
+    activation_status::Float64
+    has_been_activated::Bool
+    time_after_activation::Int
 end
 
 @agent dcell ContinuousAgent{2} begin
-    activated::Bool
+        activation_status::Float64
+        time_after_activation::Int
+        has_been_activated::Bool
 end
+
 
 cells = Union{tcell, dcell}
 
 function initialize_model(; 
-    n_dcell = 5, 
-    n_tcell = 10, 
-    speed = 5.0,
+    n_dcell = 30, 
+    n_tcell = 30, 
+    speed = 2,
     extent = (300,300),    
     visual_distance = 5.0,
-    temp_tuple = (1.0,1.0),
-    activated_status = false
+    activation_status = 0.0,
+     has_been_activated = false,
+    time_after_activation = 0
     )
 
-    space2d = ContinuousSpace(extent; spacing = 3)
+    space2d = ContinuousSpace(extent; spacing = 10,)
     
-    model = ABM(cells, space2d ; 
+    model = ABM(cells, space2d ,rng = MersenneTwister(30),properties = Dict(:dt => 1.0); 
         scheduler = Schedulers.randomly)
 
+    #scale the random number
+    
     for _ in 1:n_tcell
-        pos = Tuple(rand(model.rng, 2))
-        vel = sincos(2π * rand(model.rng)) .* 0.001
-        
+        pos = Tuple(rand(model.rng, 2)).*300
+        vel = sincos(2π * rand(model.rng)) .* speed 
         add_agent!(
-            tcell, model ,pos, vel, activated_status
+            pos, tcell, model , vel, activation_status, has_been_activated, time_after_activation
         )
     end
     
     for _ in 1:n_dcell
-        pos = Tuple(rand(model.rng, 2))
-        vel = sincos(2π * rand(model.rng)) .* 0.001
+        pos = Tuple(rand(model.rng, 2)).*300
+        vel = sincos(2π * rand(model.rng)) .* speed .* 0.6
         add_agent!(
-            dcell, pos, model,pos, vel, activated_status
+            pos, dcell, model, vel, activation_status, time_after_activation
         )
     end
 
     return model
 end
 
-# function agent_step!(cells, model)
-#     direction = (2.0,-3.0)
-#     walk!(cells, direction, model)
-# end
-agent_step!(cells, model) = move_agent!(cells, model, model.dt)
+model = initialize_model()
+
+function agent_step!(cells,model;
+        speed = 5,
+       )
+     
+#     tcell.vel = sincos(2π * rand(model.rng)) .* speed 
+#     dcell.vel = sincos(2π * rand(model.rng)) .* speed  .* 0.6
+    
+    if cells isa dcell
+        cells.vel = sincos(2π * rand(model.rng)) .* speed .* 0.6
+        neighbor_ids = nearby_ids(cells,model,5)
+        
+        for id in neighbor_ids
+            neighbor = model[id]
+            if neighbor isa tcell && neighbor.has_been_activated == false
+#                 print(typeof(model[id])) 
+                cells.vel = (0,0)
+            end
+        end
+        
+        
+    else 
+        cells.vel = sincos(2π * rand(model.rng)) .* speed 
+        neighbor_ids = nearby_ids(cells,model,5)
+    
+      
+        for id in neighbor_ids
+            neighbor = model[id]
+            if neighbor isa dcell && cells.has_been_activated == false
+                   cells.has_been_activated = true
+                   cells.vel = (0,0)
+                   cells.activation_status += 1/240
+                   cells.time_after_activation += 1
+                    break
+                
+            elseif neighbor isa dcell && cells.has_been_activated == true &&cells.time_after_activation< 1440
+                    cells.time_after_activation += 1
+                    cells.vel = (0,0)
+                    cells.activation_status += 1/240
+                    break
+                
+            elseif cells.time_after_activation == 1440
+                    cells.vel = sincos(2π * rand(model.rng)) .* speed 
+                    cells.activation_status -= 1/60
+
+                    break
+                end          
+        end
+    end
+    
+    move_agent!(cells, model, model.dt)
+end
+
+
+isActivated(a) =  a isa tcell
+count_activated(a) = count(a.has_been_activated ==  true)
+
+steps = 10000
+adata = [(isActivated,count)]
+mdata = [count_activated]
+adf, mdf = run!(model, agent_step!, steps; adata, mdata)
+
 
 CairoMakie.activate!()
 
+# offset(a) = a isa tcell ? (-0.1, -0.1*rand()) : (+0.1, +0.1*rand())
+ashape(a) = :circle
+asize(a) = a isa dcell ? 20 : 10
+acolor(a) = a.activation_status > 0 ? :blue : :black
 
-ac(tell) = :black
-ac(dcell) = :blue
-
-as(cells) = 20
-# as(tcell) = 10
-am(cells) = '✿'
-
-model = initialize_model()
-abmvideo("tcell.mp4", model, agent_step!;
-title = "imuune cell", framerate  = 15, frames = 100, as, ac)
+# abmvideo("tcell.mp4", model, agent_step!;
+# title = "immune cell", framerate  = 100, 
+#     frames = 2880, as=asize, am = ashape, ac = acolor)
