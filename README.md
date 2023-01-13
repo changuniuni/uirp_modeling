@@ -44,7 +44,8 @@ Initial goal is to make model just for single D cell and T cell.
  * Activation and Deactivation  
     - Basically affected by IL-2 field  
     - Activation : +1/4hours
-    - Deactivation : -1/1hour
+    - Deactivation : -1/1hour   
+    - Threshold of activation : 3   
 
   * Final outcome  
     1. Existence of Tcell that maintained activated status after 5 days.   
