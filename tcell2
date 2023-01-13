@@ -7,26 +7,27 @@ using CairoMakie
     activation_status::Float64
     has_been_activated::Bool
     time_after_activation::Int
+    is_currently_activated::Bool
 end
 
 @agent dcell ContinuousAgent{2} begin
-        activation_status::Float64
-        time_after_activation::Int
-        has_been_activated::Bool
+    activation_status::Float64
+    time_after_activation::Int
+    is_currently_activated::Bool
 end
-
 
 cells = Union{tcell, dcell}
 
 function initialize_model(; 
     n_dcell = 30, 
-    n_tcell = 30, 
+    n_tcell = 40, 
     speed = 2,
-    extent = (300,300),    
+    extent = (900,900),    
     visual_distance = 5.0,
     activation_status = 0.0,
      has_been_activated = false,
-    time_after_activation = 0
+    time_after_activation = 0, 
+    is_currently_activated = false,
     )
 
     space2d = ContinuousSpace(extent; spacing = 10,)
@@ -40,7 +41,7 @@ function initialize_model(;
         pos = Tuple(rand(model.rng, 2)).*300
         vel = sincos(2π * rand(model.rng)) .* speed 
         add_agent!(
-            pos, tcell, model , vel, activation_status, has_been_activated, time_after_activation
+            pos, tcell, model , vel, activation_status, has_been_activated, time_after_activation, is_currently_activated
         )
     end
     
@@ -48,84 +49,11 @@ function initialize_model(;
         pos = Tuple(rand(model.rng, 2)).*300
         vel = sincos(2π * rand(model.rng)) .* speed .* 0.6
         add_agent!(
-            pos, dcell, model, vel, activation_status, time_after_activation
+            pos, dcell, model, vel, activation_status, time_after_activation, is_currently_activated
         )
     end
+    
+
 
     return model
 end
-
-model = initialize_model()
-
-function agent_step!(cells,model;
-        speed = 5,
-       )
-     
-#     tcell.vel = sincos(2π * rand(model.rng)) .* speed 
-#     dcell.vel = sincos(2π * rand(model.rng)) .* speed  .* 0.6
-    
-    if cells isa dcell
-        cells.vel = sincos(2π * rand(model.rng)) .* speed .* 0.6
-        neighbor_ids = nearby_ids(cells,model,5)
-        
-        for id in neighbor_ids
-            neighbor = model[id]
-            if neighbor isa tcell && neighbor.has_been_activated == false
-#                 print(typeof(model[id])) 
-                cells.vel = (0,0)
-            end
-        end
-        
-        
-    else 
-        cells.vel = sincos(2π * rand(model.rng)) .* speed 
-        neighbor_ids = nearby_ids(cells,model,5)
-    
-      
-        for id in neighbor_ids
-            neighbor = model[id]
-            if neighbor isa dcell && cells.has_been_activated == false
-                   cells.has_been_activated = true
-                   cells.vel = (0,0)
-                   cells.activation_status += 1/240
-                   cells.time_after_activation += 1
-                    break
-                
-            elseif neighbor isa dcell && cells.has_been_activated == true &&cells.time_after_activation< 1440
-                    cells.time_after_activation += 1
-                    cells.vel = (0,0)
-                    cells.activation_status += 1/240
-                    break
-                
-            elseif cells.time_after_activation == 1440
-                    cells.vel = sincos(2π * rand(model.rng)) .* speed 
-                    cells.activation_status -= 1/60
-
-                    break
-                end          
-        end
-    end
-    
-    move_agent!(cells, model, model.dt)
-end
-
-
-isActivated(a) =  a isa tcell
-count_activated(a) = count(a.has_been_activated ==  true)
-
-steps = 10000
-adata = [(isActivated,count)]
-mdata = [count_activated]
-adf, mdf = run!(model, agent_step!, steps; adata, mdata)
-
-
-CairoMakie.activate!()
-
-# offset(a) = a isa tcell ? (-0.1, -0.1*rand()) : (+0.1, +0.1*rand())
-ashape(a) = :circle
-asize(a) = a isa dcell ? 20 : 10
-acolor(a) = a.activation_status > 0 ? :blue : :black
-
-# abmvideo("tcell.mp4", model, agent_step!;
-# title = "immune cell", framerate  = 100, 
-#     frames = 2880, as=asize, am = ashape, ac = acolor)
